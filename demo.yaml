@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+  labels:
+    istio-injection: enabled
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: msg
+  namespace: demo
+  labels:
+    app: msg
+spec:
+  type: ClusterIP
+  ports:
+  - name: grpc
+    protocol: TCP
+    port: 10002
+    targetPort: 10002
+  selector:
+    app: msg
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: msg
+  namespace: demo
+  labels:
+    app: msg
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: msg
+    spec:
+      containers:
+      - name: msg
+        image: sdrzlyz/grpc-envoy-demo:svc-msg
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 10002

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+// config for auth adapter
+package config;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "config";
+
+// config for auth adapter
+message Params {
+    // CheckResult ValidDuration
+    uint32 valid_duration_sec = 1;
+    // CheckResult ValidUseCount
+    int32 valid_use_count = 2;
+    // jwt relate
+    
+}

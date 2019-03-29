@@ -1,0 +1,65 @@
+# handler for adapter auth
+apiVersion: "config.istio.io/v1alpha2"
+kind: handler
+metadata:
+  name: auth
+  namespace: istio-system
+spec:
+  adapter: auth-adapter
+  connection:
+    address: "auth-adapter.istio-system.svc.cluster.local:40103"
+  params:
+    valid_duration_sec: 120
+    valid_use_count: 10
+
+---
+
+# instance for template authorization
+apiVersion: "config.istio.io/v1alpha2"
+kind: instance
+metadata:
+  name: auth
+  namespace: istio-system
+spec:
+  template: auth
+  params:
+    subject:
+      properties:
+        x-token: request.headers["x-token"] | ""
+        x-token-verify: request.headers["x-token-verify"] | ""
+        # host: request.host | ""
+        # referer: request.referer
+        #agent: request.useragent
+    action:
+      namespace: destination.service.namespace
+      service: destination.service.name
+      method: request.method
+      path: request.path
+---
+
+# rule to dispatch to handler
+apiVersion: "config.istio.io/v1alpha2"
+kind: rule
+metadata:
+  name: auth
+  namespace: istio-system
+spec:
+  match: destination.service.namespace == "demo"
+  actions:
+  - handler: auth.handler
+    instances:
+    - auth.instance
+    name: rw
+  requestHeaderOperations:
+  # invoke request header
+  - name: x-token
+    values:
+    - rw.output.headers["x-token"]
+  responseHeaderOperations:
+  # set a response header
+  - name: x-token-verify
+    values:
+    - rw.output.headers["x-token-verify"]
+  - name: x-token
+    values:
+    - rw.output.headers["x-token"]

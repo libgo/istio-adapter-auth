@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+// template for auth adapter
+package auth;
+
+import "gogoproto/gogo.proto";
+import "policy/v1beta1/type.proto";
+import "mixer/adapter/model/v1beta1/extensions.proto";
+
+option (istio.mixer.adapter.model.v1beta1.template_variety) = TEMPLATE_VARIETY_CHECK_WITH_OUTPUT;
+
+// Template from istio source code.
+// https://github.com/istio/istio/blob/master/mixer/template/authorization/template.proto
+
+// A subject contains a list of attributes that identify
+// the caller identity.
+message Subject {
+    // The user name/ID that the subject represents.
+    string user = 1;
+    // Groups the subject belongs to depending on the authentication mechanism,
+    // "groups" are normally populated from JWT claim or client certificate.
+    // The operator can define how it is populated when creating an instance of
+    // the template.
+    string groups = 2;
+    // Additional attributes about the subject.
+    map<string, istio.policy.v1beta1.Value> properties = 3;
+  }
+  
+  // An action defines "how a resource is accessed".
+  message Action {
+    // Namespace the target action is taking place in.
+    string namespace = 1;
+    // The Service the action is being taken on.
+    string service = 2;
+    // What action is being taken.
+    string method = 3;
+    // HTTP REST path within the service
+    string path = 4;
+    // Additional data about the action for use in policy.
+    map<string, istio.policy.v1beta1.Value> properties = 5;
+  }
+  
+  // The `auth` template defines parameters for performing policy
+  // enforcement within Istio. It is primarily concerned with enabling Mixer
+  // adapters to make decisions about who is allowed to do what.
+  // In this template, the "who" is defined in a Subject message. The "what" is
+  // defined in an Action message. During a Mixer Check call, these values
+  // will be populated based on configuration from request attributes and
+  // passed to individual authorization adapters to adjudicate.
+  message Template {
+    // A subject contains a list of attributes that identify
+    // the caller identity.
+    Subject subject = 1;
+    // An action defines "how a resource is accessed".
+    Action action = 2;
+  }
+
+// The `auth` template headers response
+message OutputTemplate {
+    // Response headers used for requestHeaderOperations and responseHeaderOperations
+    map<string,string> headers = 1;
+}

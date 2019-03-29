@@ -1,0 +1,11 @@
+bin/
+testdata/
+
+# template gen
+*.descriptor_set
+*.proto_descriptor
+*.gen.go
+*.pb.go
+
+# key
+*.pem
