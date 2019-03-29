@@ -3,9 +3,11 @@
 ### `auth-adapter` is JWT token with redis block strategy and RBAC combination for istio mixer.
 
 ### please read reference first to know more about istio `template` and `adapter`.
-> https://github.com/istio/istio/wiki/Mixer-Out-Of-Process-Adapter-Walkthrough
-> https://github.com/istio/istio/wiki/Mixer-Template-Dev-Guide
-> https://github.com/istio/istio/wiki/Route-directive-adapter-development-guide
+>  https://github.com/istio/istio/wiki/Mixer-Out-Of-Process-Adapter-Walkthrough
+
+>  https://github.com/istio/istio/wiki/Mixer-Template-Dev-Guide
+
+>  https://github.com/istio/istio/wiki/Route-directive-adapter-development-guide
 
 #### dev steps https://github.com/istio/istio/wiki/Dev-Guide
 ```
